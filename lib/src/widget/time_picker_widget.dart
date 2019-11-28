@@ -242,7 +242,8 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
             int value = valueRange.first + index;
 
             if (format.contains('m')) {
-              value = minuteDivider * index;
+              int first = _minuteRange.first ~/ _minuteDivider + (_minuteRange.first % _minuteDivider == 0 ? 0 : 1);
+              value = (index + first) * _minuteDivider;
             }
 
             return _renderDatePickerItemComponent(value, format);
@@ -258,7 +259,8 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
       return (valueRange.last - valueRange.first + 1);
     }
 
-    return (valueRange.last - valueRange.first + 1) ~/ divider;
+    int count = valueRange.last - valueRange.first + 1;
+    return count ~/ divider + (count % divider == 0 ? 0 : 1);
   }
 
   Widget _renderDatePickerItemComponent(int value, String format) {
@@ -285,8 +287,8 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
 
   /// change the selection of minute picker
   void _changeMinuteSelection(int index) {
-    // TODO: this looks like it would break date ranges but not taking into account _minuteRange.first
-    int value = index * _minuteDivider;
+    int first = _minuteRange.first ~/ _minuteDivider + (_minuteRange.first % _minuteDivider == 0 ? 0 : 1);
+    int value = (index + first) * _minuteDivider;
     if (_currMinute != value) {
       _currMinute = value;
       _changeTimeRange();
